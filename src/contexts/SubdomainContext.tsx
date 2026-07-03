@@ -1,8 +1,12 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { signedFetch } from '@chepelcr/tsuru-storefront-sdk';
 import { getSubdomain } from '@/lib/subdomain';
-import { buildPublicApiUrl } from '@/lib/apiUtils';
 import type { Organization } from '@/models';
+
+const PUBLIC_API_HOST =
+  (import.meta.env.VITE_PUBLIC_API_URL as string | undefined) ?? 'https://public-api.tsuru.jcampos.dev';
+const REGION = (import.meta.env.VITE_AWS_REGION as string | undefined) ?? 'us-east-1';
 
 interface BucketConfig {
   templateId?: string;
@@ -38,20 +42,20 @@ export function SubdomainProvider({ children }: { children: ReactNode }) {
     queryKey: ['organization', config?.mode, config?.orgId, config?.templateId],
     queryFn: async () => {
       if (!config) return null;
-      
-      if (config.mode === 'prod' && config.orgId) {
-        const response = await fetch(buildPublicApiUrl(`/organizations/${config.orgId}`));
-        if (!response.ok) throw new Error('Failed to fetch organization');
-        return response.json();
-      }
-      
-      if (config.mode === 'demo' && config.templateId) {
-        const response = await fetch(buildPublicApiUrl(`/templates/${config.templateId}`));
-        if (!response.ok) throw new Error('Failed to fetch template');
-        return response.json();
-      }
-      
-      return null;
+
+      // Signed (guest SigV4) store-identity fetch via the public API. Demo reads
+      // the template row; live reads the org's public theme (carries orgId).
+      const path =
+        config.mode === 'demo' && config.templateId
+          ? `/api/templates/${config.templateId}`
+          : config.orgId
+          ? `/api/public/organizations/${config.orgId}/theme`
+          : null;
+      if (!path) return null;
+
+      const response = await signedFetch(PUBLIC_API_HOST + path, REGION);
+      if (!response.ok) return null;
+      return response.json();
     },
     enabled: !!config && (!!config.orgId || !!config.templateId),
   });

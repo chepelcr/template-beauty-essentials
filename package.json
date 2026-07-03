@@ -10,6 +10,7 @@
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
+    "@chepelcr/tsuru-storefront-sdk": "^1.0.0",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dialog": "^1.1.7",

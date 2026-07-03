@@ -1,100 +1,39 @@
-import { buildOrgApiUrl, buildPublicApiUrl } from './apiUtils';
-import { useSubdomainContext } from '../contexts/SubdomainContext';
-
 /**
- * Fetch template content (demo mode)
+ * Storefront API — thin adapter over @chepelcr/tsuru-storefront-sdk.
+ *
+ * The SDK owns the contract: guest SigV4 signing, demo-vs-live URL resolution,
+ * and response normalization. This module only maps the template's existing
+ * `getApiClient(mode, id)` surface onto the SDK so the hooks stay unchanged.
  */
-async function fetchTemplateContent(templateId: string, endpoint: string, filters?: Record<string, any>) {
-  let url = buildPublicApiUrl(`/templates/${templateId}${endpoint}`);
-  if (filters && Object.keys(filters).length > 0) {
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        params.append(key, String(value));
-      }
-    });
-    url = `${url}?${params.toString()}`;
-  }
+import {
+  createStorefrontClient,
+  type StorefrontConfig,
+} from '@chepelcr/tsuru-storefront-sdk';
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch template ${endpoint}`);
-  return res.json();
+const REGION = (import.meta.env.VITE_AWS_REGION as string | undefined) ?? 'us-east-1';
+// Optional host override; the SDK defaults to https://public-api.tsuru.jcampos.dev
+const HOST = import.meta.env.VITE_PUBLIC_API_URL as string | undefined;
+
+function toConfig(mode: string, id: string): StorefrontConfig {
+  return mode === 'demo'
+    ? { mode: 'demo', templateId: id }
+    : { mode: 'prod', orgId: id };
 }
 
-/**
- * Fetch organization content (org mode)
- */
-async function fetchOrgContent(orgId: string, endpoint: string, filters?: Record<string, any>) {
-  let url = buildPublicApiUrl(`/public/organizations/${orgId}${endpoint}`);
-  if (filters && Object.keys(filters).length > 0) {
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        params.append(key, String(value));
-      }
-    });
-    url = `${url}?${params.toString()}`;
-  }
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch org ${endpoint}`);
-  return res.json();
-}
-
-/**
- * Create API client with mode and id
- */
-function createApiClient(mode: string, id: string) {
+/** Create an API client for the given mode ('demo' | 'prod') and id (templateId | orgId). */
+export function getApiClient(mode: string, id: string) {
+  const client = createStorefrontClient({ config: toConfig(mode, id), host: HOST, region: REGION });
   return {
-    async getTheme() {
-      if (mode === 'demo') {
-        return fetchTemplateContent(id, '/theme');
-      }
-      return fetchOrgContent(id, '/theme');
-    },
-
-    async getContact() {
-      if (mode === 'demo') {
-        return fetchTemplateContent(id, '/contact');
-      }
-      return fetchOrgContent(id, '/contact');
-    },
-
-    async getCategories() {
-      if (mode === 'demo') {
-        return fetchTemplateContent(id, '/categories');
-      }
-      return fetchOrgContent(id, '/categories');
-    },
-
-    async getPages() {
-      if (mode === 'demo') {
-        return fetchTemplateContent(id, '/pages');
-      }
-      return fetchOrgContent(id, '/pages');
-    },
-
-    async getProducts(filters?: Record<string, any>) {
-      if (mode === 'demo') {
-        return fetchTemplateContent(id, '/products', filters);
-      }
-      return fetchOrgContent(id, '/products', filters);
-    },
-
-    async getPage(slug: string) {
-      if (mode === 'demo') {
-        return fetchTemplateContent(id, `/pages/${slug}`);
-      }
-      return fetchOrgContent(id, `/pages/${slug}`);
-    },
+    getTheme: () => client.getTheme(),
+    getContact: () => client.getContact(),
+    getCategories: () => client.getCategories(),
+    getPages: () => client.getPages(),
+    getProducts: (filters?: Record<string, any>) => client.getProducts(filters),
+    getPage: (slug: string) => client.getPage(slug),
   };
 }
 
-// Export factory function
-export function getApiClient(mode: string, id: string) {
-  return createApiClient(mode, id);
-}
-
-// Legacy export for backward compatibility
+// Legacy export retained for backward compatibility.
 export const api = {
   getTheme: () => { throw new Error('Use getApiClient instead'); },
   getContact: () => { throw new Error('Use getApiClient instead'); },

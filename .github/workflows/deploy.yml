@@ -7,6 +7,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  packages: read
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -14,8 +15,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      VITE_API_URL: https://api.tsuru.jcampos.dev
+      VITE_IDENTITY_POOL_ID: us-east-1:be94bc45-883e-44ff-9eb7-3e58c23ea9e8
+      VITE_AWS_REGION: us-east-1
       VITE_BASE_DOMAIN: examples.tsuru.jcampos.dev
+      # Read @chepelcr/tsuru-storefront-sdk from GitHub Packages (same-owner public pkg).
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -23,7 +27,8 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      # SDK is a new dep not yet in the committed lockfile → allow resolve/update.
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run build
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
