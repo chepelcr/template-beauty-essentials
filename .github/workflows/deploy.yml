@@ -27,8 +27,7 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-      # SDK is a new dep not yet in the committed lockfile → allow resolve/update.
-      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
@@ -43,3 +42,24 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+  notify:
+    # Tell the org-site provisioner a new bundle is live so it re-mirrors every
+    # provisioned org storefront using this template (TEMPLATE_UPDATED event).
+    needs: deploy
+    if: ${{ vars.AWS_TEMPLATE_EVENTS_ROLE_ARN != '' }}
+    runs-on: ubuntu-latest
+    continue-on-error: true # best-effort until the publisher role is deployed
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_TEMPLATE_EVENTS_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Publish TEMPLATE_UPDATED
+        env:
+          TOPIC_ARN: ${{ vars.TSURU_ORG_EVENTS_TOPIC_ARN }}
+        run: |
+          TEMPLATE_ID="${GITHUB_REPOSITORY##*/template-}"
+          aws sns publish --topic-arn "$TOPIC_ARN" --message "$(printf '{"_type":"TemplateEvent","id":"gh-%s-%s","date":%s,"eventType":"TEMPLATE_UPDATED","data":{"templateId":"%s"}}' "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$(date +%s%3N)" "$TEMPLATE_ID")"
