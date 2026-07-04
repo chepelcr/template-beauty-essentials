@@ -1,0 +1,32 @@
+name: Refresh pnpm lockfile
+# Regenerates pnpm-lock.yaml in CI, where GITHUB_TOKEN can read
+# @chepelcr/tsuru-storefront-sdk from GitHub Packages (needs packages:read,
+# which local tokens lack). Commits the refreshed lockfile back to main.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  packages: read
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: pnpm install --lockfile-only --no-frozen-lockfile
+      - name: Commit lockfile if changed
+        run: |
+          if ! git diff --quiet pnpm-lock.yaml; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add pnpm-lock.yaml
+            git commit -m "chore: refresh pnpm-lock.yaml (resolve @chepelcr/tsuru-storefront-sdk)"
+            git push
+          else
+            echo "pnpm-lock.yaml already up to date"
+          fi
