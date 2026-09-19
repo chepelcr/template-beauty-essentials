@@ -2,8 +2,8 @@
  * Subdomain detection utility for multi-tenant SaaS
  *
  * Examples:
- * - j-markets.jcampos.dev -> null (main domain)
- * - beauty-essentials.j-markets.jcampos.dev -> "beauty-essentials"
+ * - stores.tsuru.jcampos.dev -> null (main domain)
+ * - beauty-essentials.stores.tsuru.jcampos.dev -> "beauty-essentials"
  * - localhost:5173 -> null
  * - beauty-essentials.localhost:5173 -> "beauty-essentials"
  */
