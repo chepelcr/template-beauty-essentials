@@ -18,6 +18,7 @@ jobs:
       VITE_IDENTITY_POOL_ID: us-east-1:be94bc45-883e-44ff-9eb7-3e58c23ea9e8
       VITE_AWS_REGION: us-east-1
       VITE_BASE_DOMAIN: examples.tsuru.jcampos.dev
+      VITE_LANDING_PAGE_URL: https://tsuru.jcampos.dev
       # Read @chepelcr/tsuru-storefront-sdk from GitHub Packages (same-owner public pkg).
       NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
