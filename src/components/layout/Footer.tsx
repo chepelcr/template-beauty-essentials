@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Instagram, Facebook, Twitter, Mail, MessageCircle, MapPin, Heart, Sparkles, Store } from "lucide-react";
+import { formatPhone, whatsappPhone, whatsappUrl } from "@chepelcr/tsuru-storefront-sdk";
 import { useContact, useHomePageSections, useTheme } from "@/hooks/useContent";
 import { useSubdomainContext } from "@/contexts/SubdomainContext";
 import { getSectionByType } from "@/lib/pageUtils";
@@ -7,6 +8,7 @@ import { getSectionByType } from "@/lib/pageUtils";
 export default function Footer() {
   const landingUrl = import.meta.env.VITE_LANDING_PAGE_URL || 'https://tsuru.jcampos.dev';
   const { data: contact } = useContact();
+  const storeWhatsapp = whatsappPhone(contact);
   const { organization } = useSubdomainContext();
   const { data: theme } = useTheme();
   const { data: sections = [] } = useHomePageSections();
@@ -58,7 +60,7 @@ export default function Footer() {
                 <Sparkles className="w-6 h-6 text-primary" />
               )}
               <span className="text-xl font-serif font-bold text-foreground">
-                {organization?.name || 'Beauty Essentials'}
+                {organization?.name}
               </span>
             </div>
             <p className="text-muted-foreground text-sm mb-4">
@@ -190,11 +192,11 @@ export default function Footer() {
                   </span>
                 </li>
               )}
-              {contact?.phone && (
+              {storeWhatsapp && (
                 <li className="flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                  <a href={`https://wa.me/${contact.whatsappNumber?.replace(/[^0-9]/g, "")}?text=${encodeURIComponent("Hola, me gustaría obtener más información")}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                    {contact.phone}
+                  <a href={whatsappUrl(storeWhatsapp, "Hola, me gustaría obtener más información")} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                    {formatPhone(storeWhatsapp)}
                   </a>
                 </li>
               )}

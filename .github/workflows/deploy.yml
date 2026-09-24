@@ -49,7 +49,6 @@ jobs:
     needs: deploy
     if: ${{ vars.AWS_TEMPLATE_EVENTS_ROLE_ARN != '' }}
     runs-on: ubuntu-latest
-    continue-on-error: true # best-effort until the publisher role is deployed
     permissions:
       id-token: write
       contents: read
@@ -63,4 +62,9 @@ jobs:
           TOPIC_ARN: ${{ vars.TSURU_ORG_EVENTS_TOPIC_ARN }}
         run: |
           TEMPLATE_ID="${GITHUB_REPOSITORY##*/template-}"
-          aws sns publish --topic-arn "$TOPIC_ARN" --message "$(printf '{"_type":"TemplateEvent","id":"gh-%s-%s","date":%s,"eventType":"TEMPLATE_UPDATED","data":{"templateId":"%s"}}' "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$(date +%s%3N)" "$TEMPLATE_ID")"
+          # snake_case wire contract, pinned by sales-be
+          # tests/test_template_updated_handler.py. The event_type attribute is
+          # what the subscription FilterPolicy matches on.
+          aws sns publish --topic-arn "$TOPIC_ARN" \
+            --message-attributes '{"event_type":{"DataType":"String","StringValue":"TEMPLATE_UPDATED"}}' \
+            --message "$(printf '{"_type":"TemplateEvent","id":"gh-%s-%s","date":%s,"event_type":"TEMPLATE_UPDATED","data":{"template_id":"%s"}}' "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$(date +%s%3N)" "$TEMPLATE_ID")"

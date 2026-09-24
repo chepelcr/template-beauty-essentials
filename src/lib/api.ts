@@ -24,6 +24,7 @@ function toConfig(mode: string, id: string): StorefrontConfig {
 export function getApiClient(mode: string, id: string) {
   const client = createStorefrontClient({ config: toConfig(mode, id), host: HOST, region: REGION });
   return {
+    getOrganization: () => client.getOrganization(),
     getTheme: () => client.getTheme(),
     getContact: () => client.getContact(),
     getCategories: () => client.getCategories(),

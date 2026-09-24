@@ -28,7 +28,7 @@ export default function Navbar() {
                 <Sparkles className="w-8 h-8 text-primary" />
               )}
               <span className="text-2xl font-serif font-bold text-foreground">
-                {organization?.name || 'Beauty Essentials'}
+                {organization?.name}
               </span>
             </a>
           </Link>

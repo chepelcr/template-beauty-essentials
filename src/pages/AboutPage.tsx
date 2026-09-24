@@ -72,12 +72,14 @@ export default function AboutPage() {
               </div>
 
               <h2 className="text-3xl font-serif font-bold text-foreground mb-4">Contact Us</h2>
-              <p className="text-muted-foreground">
-                Have questions? We'd love to hear from you. Reach out to our team at{' '}
-                <a href={`mailto:${contact?.email || 'contact@example.com'}`} className="text-primary hover:underline">
-                  {contact?.email || 'contact@example.com'}
-                </a>
-              </p>
+              {contact?.email && (
+                <p className="text-muted-foreground">
+                  Have questions? We'd love to hear from you. Reach out to our team at{' '}
+                  <a href={`mailto:${contact.email}`} className="text-primary hover:underline">
+                    {contact.email}
+                  </a>
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { useCartStore } from "@/store/cart";
 import { generateWhatsAppMessage } from "@/lib/whatsapp";
+import { whatsappPhone, whatsappUrl } from "@chepelcr/tsuru-storefront-sdk";
+import { useContact } from "@/hooks/useContent";
 import CheckoutAddress, {
   type AddressNames,
   type StructuredAddress,
@@ -38,6 +40,7 @@ const EMPTY_NAMES: AddressNames = {
 };
 
 export default function CheckoutModal() {
+  const { data: contact } = useContact();
   const { showCheckout, setShowCheckout, items, total, clearCart } =
     useCartStore();
 
@@ -98,10 +101,13 @@ export default function CheckoutModal() {
       },
     });
 
-    const phone = "1234567890"; // Placeholder WhatsApp number
-
-    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
+    // Orders go to the store's own WhatsApp (else its phone), never a placeholder.
+    const storePhone = whatsappPhone(contact);
+    if (!storePhone) {
+      alert("Esta tienda todavía no configuró un número de WhatsApp para recibir pedidos.");
+      return;
+    }
+    window.open(whatsappUrl(storePhone, message), "_blank");
 
     // Clear cart and close modal
     clearCart();
