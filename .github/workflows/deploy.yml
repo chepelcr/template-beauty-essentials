@@ -53,6 +53,7 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_TEMPLATE_EVENTS_ROLE_ARN }}
@@ -61,7 +62,10 @@ jobs:
         env:
           TOPIC_ARN: ${{ vars.TSURU_ORG_EVENTS_TOPIC_ARN }}
         run: |
-          TEMPLATE_ID="${GITHUB_REPOSITORY##*/template-}"
+          # The template's UUID (templates.id), the key the provisioner and the
+          # storefront's config.json use — never the repo name.
+          TEMPLATE_ID="$(jq -r '.templateId' public/config.json)"
+          [ -n "$TEMPLATE_ID" ] && [ "$TEMPLATE_ID" != "null" ] || { echo "::error::public/config.json has no templateId"; exit 1; }
           # snake_case wire contract, pinned by sales-be
           # tests/test_template_updated_handler.py. The event_type attribute is
           # what the subscription FilterPolicy matches on.

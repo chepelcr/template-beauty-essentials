@@ -8,6 +8,7 @@
 import {
   createStorefrontClient,
   type StorefrontConfig,
+  type StorefrontOrderInput,
 } from '@chepelcr/tsuru-storefront-sdk';
 
 const REGION = (import.meta.env.VITE_AWS_REGION as string | undefined) ?? 'us-east-1';
@@ -25,6 +26,7 @@ export function getApiClient(mode: string, id: string) {
   const client = createStorefrontClient({ config: toConfig(mode, id), host: HOST, region: REGION });
   return {
     getOrganization: () => client.getOrganization(),
+    createOrder: (input: StorefrontOrderInput) => client.createOrder(input),
     getTheme: () => client.getTheme(),
     getContact: () => client.getContact(),
     getCategories: () => client.getCategories(),
