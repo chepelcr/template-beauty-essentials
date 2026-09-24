@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@chepelcr/tsuru-storefront-sdk':
-        specifier: ^1.1.0
-        version: 1.1.0(aws-amplify@6.18.0)
+        specifier: ^1.2.0
+        version: 1.2.0(aws-amplify@6.18.0)
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.80.0(react@18.3.1))
@@ -333,8 +333,8 @@ packages:
     resolution: {integrity: sha512-4zBIxpPzowiZpusoFkyGVwakdRJUyuH5PxQ/PrqghfdFWWasvnCdPfQXHrenDai+gyLARulZjZowCOj6fjT4pA==}
     engines: {node: '>=6.9.0'}
 
-  '@chepelcr/tsuru-storefront-sdk@1.1.0':
-    resolution: {integrity: sha512-E5u1NYYhmWmOus7DqPc6co3IkxQHXj5twbI3dzXRg+cMseH7tWwaLq9OhljtuFhXETCfE78mXbf+0lTGQkRDbg==, tarball: https://npm.pkg.github.com/download/@chepelcr/tsuru-storefront-sdk/1.1.0/30096eb790a14404a242edbba4648401703c6150}
+  '@chepelcr/tsuru-storefront-sdk@1.2.0':
+    resolution: {integrity: sha512-547iZfrIQuomdlO+hqk+uJUj3xro0dpHIjM9dORNsgiq2EV+tsPJJz3R40yKYEhzAWRdCrOaz5Wul6njJp3u0Q==, tarball: https://npm.pkg.github.com/download/@chepelcr/tsuru-storefront-sdk/1.2.0/eefb9b17a3fddfcbc63aa55516e32b5409d37d21}
     peerDependencies:
       aws-amplify: ^6.0.0
 
@@ -2203,7 +2203,7 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@chepelcr/tsuru-storefront-sdk@1.1.0(aws-amplify@6.18.0)':
+  '@chepelcr/tsuru-storefront-sdk@1.2.0(aws-amplify@6.18.0)':
     dependencies:
       aws-amplify: 6.18.0
       aws4fetch: 1.0.20
