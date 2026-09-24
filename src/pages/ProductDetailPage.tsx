@@ -16,10 +16,26 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
+import { useCartStore } from '@/store/cart';
+import { useRouteProduct } from '@/hooks/useRouteProduct';
 
 
 
 export default function ProductDetailPage() {
+  // Add the store's real product (the one this route points at) to the cart.
+  const routeProduct = useRouteProduct();
+  const { addToCart, isOpen, toggleCart } = useCartStore();
+  const handleAddToCart = () => {
+    if (!routeProduct) return;
+    addToCart({
+      id: routeProduct.id,
+      name: routeProduct.name,
+      price: routeProduct.price,
+      imageUrl: routeProduct.imageUrl,
+      quantity: quantity,
+    });
+    if (!isOpen) toggleCart();
+  };
   const [, params] = useRoute("/products/:id");
   const productId = params?.id || "1";
   const { data: products = [] } = useProducts();
@@ -188,7 +204,7 @@ export default function ProductDetailPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-4 mb-8">
-                <button className="flex-1 btn-beauty flex items-center justify-center gap-2">
+                <button className="flex-1 btn-beauty flex items-center justify-center gap-2" onClick={handleAddToCart} disabled={!routeProduct}>
                   <ShoppingCart className="w-5 h-5" />
                   Add to Cart
                 </button>
