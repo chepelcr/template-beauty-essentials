@@ -216,9 +216,9 @@ export default function Footer() {
         <div className="beauty-divider mb-6"></div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p className="flex items-center gap-1">
-            Hecho con <Heart className="w-4 h-4 text-primary fill-primary" /> por JCampos para JMarkets
+            Hecho con <Heart className="w-4 h-4 text-primary fill-primary" /> por JCampos para Tsuru
           </p>
-          <p>2024 JMarkets by JCampos. Todos los derechos reservados.</p>
+          <p>2024 Tsuru by JCampos. Todos los derechos reservados.</p>
           <div className="flex gap-4">
             <span className="font-medium">Libre de Crueldad</span>
             <span className="font-medium">Vegano</span>
