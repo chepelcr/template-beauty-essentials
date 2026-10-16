@@ -77,7 +77,6 @@ export function usePages() {
 }
 
 export function useProducts(filters?: {
-  isService?: boolean;
   onSale?: boolean;
   type?: string;
   category?: string;

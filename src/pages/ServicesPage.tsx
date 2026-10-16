@@ -7,7 +7,7 @@ import { parsePageSections, getSectionByType } from "@/lib/pageUtils";
 import { DynamicIcon } from "@/components/DynamicIcon";
 
 export default function ServicesPage() {
-  const { data: services = [], isLoading } = useProducts({ isService: true });
+  const { data: services = [], isLoading } = useProducts({ type: 'service' });
   const { data: pageData, isLoading: pageLoading } = useServicesPage();
   const { data: theme } = useTheme();
 
