@@ -1,3 +1,4 @@
+import {CustomerCheckoutEntry} from '@/customer';
 import { useState } from "react";
 import {
   Dialog,
@@ -175,6 +176,7 @@ export default function CheckoutModal() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <CustomerCheckoutEntry/>
           {/* Personal Information */}
           <div>
             <h5 className="font-medium text-gray-900 mb-4">

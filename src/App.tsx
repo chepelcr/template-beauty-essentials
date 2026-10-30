@@ -1,3 +1,4 @@
+import {CustomerStoreProvider, CustomerBar, BarterPage, AccountPage, AuthCallbackPage} from '@/customer';
 import { Route, Switch } from "wouter";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
@@ -12,11 +13,6 @@ import DealsPage from "@/pages/DealsPage";
 import ServicesPage from "@/pages/ServicesPage";
 import ProgramsPage from "@/pages/ProgramsPage";
 import AboutPage from "@/pages/AboutPage";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
-import VerifyEmail from "@/pages/VerifyEmail";
-import ForgotPassword from "@/pages/ForgotPassword";
-import ResetPassword from "@/pages/ResetPassword";
 import NotFoundPage from "@/pages/NotFoundPage";
 import CartSidebar from "@/components/cart/cart-sidebar";
 import CheckoutModal from "@/components/cart/checkout-modal";
@@ -35,7 +31,12 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-background">
+      <CustomerBar/>
       <Switch>
+        <Route path="/auth/callback" component={AuthCallbackPage} />
+        <Route path="/trueque" component={BarterPage} />
+        <Route path="/barter" component={BarterPage} />
+        <Route path="/account" component={AccountPage} />
         {/* Public routes */}
         <Route path="/" component={HomePage} />
         <Route path="/products" component={ProductsPage} />
@@ -46,11 +47,11 @@ function AppContent() {
         <Route path="/about" component={AboutPage} />
 
         {/* Authentication routes */}
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/verify-email" component={VerifyEmail} />
-        <Route path="/forgot-password" component={ForgotPassword} />
-        <Route path="/reset-password" component={ResetPassword} />
+        <Route path="/login" component={AccountPage} />
+        <Route path="/register" component={AccountPage} />
+        <Route path="/verify-email" component={AccountPage} />
+        <Route path="/forgot-password" component={AccountPage} />
+        <Route path="/reset-password" component={AccountPage} />
 
         {/* 404 fallback */}
         <Route component={NotFoundPage} />
@@ -66,7 +67,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SubdomainProvider>
-        <AppContent />
+        <CustomerStoreProvider><AppContent /></CustomerStoreProvider>
       </SubdomainProvider>
     </QueryClientProvider>
   );

@@ -31,7 +31,8 @@
     "tailwind-merge": "^2.6.0",
     "wouter": "^3.3.5",
     "zod": "^3.25.76",
-    "zustand": "^4.5.0"
+    "zustand": "^4.5.0",
+    "amazon-cognito-identity-js": "^6.3.22"
   },
   "devDependencies": {
     "@types/react": "^18.3.11",
