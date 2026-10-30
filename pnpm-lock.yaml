@@ -1833,6 +1833,9 @@ packages:
       react:
         optional: true
 
+  fast-base64-decode@1.0.0:
+    resolution: {integrity: sha512-qwaScUgUGBYeDNRnbc/KyllVU88Jk1pRHPStuF/lO7B0/RTRLj7U0lkdTAutlBblY08rwZDff6tNU9cjv6j//Q==}
+
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
@@ -3609,3 +3612,5 @@ snapshots:
       '@types/react': 18.3.31
       immer: 9.0.6
       react: 18.3.1
+
+  fast-base64-decode@1.0.0: {}
