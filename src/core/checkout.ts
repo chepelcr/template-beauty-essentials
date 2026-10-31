@@ -33,6 +33,7 @@ export const needsAddress = (method: DeliveryMethod | ''): boolean => method !==
 
 export interface CheckoutValues {
   name: string;
+  email: string;
   phone: string;
   method: DeliveryMethod | '';
   stateId: number | null;
@@ -46,6 +47,7 @@ export interface CheckoutValues {
 
 export const EMPTY_CHECKOUT: CheckoutValues = {
   name: '',
+  email: '',
   phone: '',
   method: '',
   stateId: null,
@@ -61,6 +63,7 @@ export type CheckoutField = keyof CheckoutValues;
 /** Message keys; each template's dictionary words them (`checkout.error.<code>`). */
 export type CheckoutErrorCode =
   | 'name_required'
+  | 'email_required'
   | 'phone_required'
   | 'phone_invalid'
   | 'method_required'
@@ -81,6 +84,7 @@ export function normalizePhone(value: string): string | null {
 export function validateCheckout(values: CheckoutValues): CheckoutErrors {
   const errors: CheckoutErrors = {};
   if (values.name.trim().length < 2) errors.name = 'name_required';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = 'email_required';
   if (!values.phone.trim()) errors.phone = 'phone_required';
   else if (!normalizePhone(values.phone)) errors.phone = 'phone_invalid';
   if (!values.method) errors.method = 'method_required';
@@ -94,7 +98,7 @@ export function validateCheckout(values: CheckoutValues): CheckoutErrors {
 }
 
 export const FIELD_ORDER: readonly CheckoutField[] = [
-  'name', 'phone', 'method', 'stateId', 'countyId', 'districtId', 'neighborhoodId', 'address', 'comment',
+  'name', 'email', 'phone', 'method', 'stateId', 'countyId', 'districtId', 'neighborhoodId', 'address', 'comment',
 ];
 
 /** The first field with an error, for focus management. */
@@ -102,10 +106,11 @@ export function firstInvalidField(errors: CheckoutErrors): CheckoutField | null 
   return FIELD_ORDER.find((f) => errors[f]) ?? null;
 }
 
-export function toOrderInput(values: CheckoutValues, lines: CartLine[]): StorefrontOrderInput {
+export function toOrderInput(values: CheckoutValues, lines: CartLine[]): StorefrontOrderInput & { customerEmail: string } {
   const phone = normalizePhone(values.phone) ?? values.phone.trim();
   return {
     customerName: values.name.trim(),
+    customerEmail: values.email.trim(),
     customerPhone: phone,
     deliveryMethod: values.method || null,
     address: needsAddress(values.method)

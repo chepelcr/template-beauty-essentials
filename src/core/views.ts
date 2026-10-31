@@ -4,6 +4,7 @@
  * Templates render it however their design asks; nothing here decides how a
  * page looks. `t` is the template's own translate function.
  */
+import { createGuestOrder } from './sdk';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { useCart, useCartTotals } from './cart-store';
 import {
@@ -104,7 +105,7 @@ export type CheckoutPhase = 'form' | 'submitting' | 'demo' | 'success';
  * the phase becomes 'demo' with the message that would have been sent.
  */
 export function useCheckout(t: Translate) {
-  const { isDemo, client, contact, organization } = useStore();
+  const { isDemo, client, contact, organization, config } = useStore();
   const open = useCart((s) => s.checkoutOpen);
   const closeCheckout = useCart((s) => s.closeCheckout);
   const openCart = useCart((s) => s.open);
@@ -193,7 +194,7 @@ export function useCheckout(t: Translate) {
     const waWindow = phone ? window.open('', '_blank') : null;
     setPhase('submitting');
     try {
-      const order = await client.createOrder(toOrderInput(values, lines));
+      const order = await createGuestOrder(config!.orgId!, toOrderInput(values, lines));
       const text = compose(order.trackingNumber);
       setTracking(order.trackingNumber);
       if (phone) {

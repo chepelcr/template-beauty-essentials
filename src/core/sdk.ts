@@ -15,6 +15,7 @@ import {
   type StorefrontClient,
   type StorefrontConfig,
   type StorefrontProduct,
+  type StorefrontOrderInput,
 } from '@chepelcr/tsuru-storefront-sdk';
 import { env } from './env';
 
@@ -97,4 +98,21 @@ export async function fetchLiveCategories(orgId: string): Promise<StorefrontCate
 /** A demo template's shipping flags (management-be). */
 export function fetchTemplateShipping(templateId: string): Promise<Record<string, unknown>> {
   return signedGetJson<Record<string, unknown>>(`/api/templates/${templateId}/shipping`);
+}
+
+/** The installed SDK predates the guest email field; retain its SigV4 transport. */
+export async function createGuestOrder(orgId: string, input: StorefrontOrderInput & { customerEmail: string }) {
+  const path = `/api/organizations/${encodeURIComponent(orgId)}/orders`;
+  const response = await signedFetch(env.apiHost + path, env.region, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      customer_name: input.customerName, customer_phone: input.customerPhone, customer_email: input.customerEmail,
+      delivery_method: input.deliveryMethod,
+      address: input.address ? { state_id: input.address.stateId, county_id: input.address.countyId, district_id: input.address.districtId, neighborhood_id: input.address.neighborhoodId, address: input.address.address } : null,
+      items: input.items.map(item => ({ product_id: item.productId, quantity: item.quantity })), comment: input.comment,
+    }),
+  });
+  if (!response.ok) throw new StorefrontApiError(response.status, path);
+  const created = await response.json();
+  return { orderId: created.order_id, documentNumber: created.document_number, trackingNumber: created.tracking_number, orderStatus: created.order_status, grandTotal: created.grand_total };
 }

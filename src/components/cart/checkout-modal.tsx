@@ -51,6 +51,7 @@ export default function CheckoutModal() {
 
   const [formData, setFormData] = useState({
     customerName: "",
+    customerEmail: "",
     customerPhone: "",
     deliveryMethod: "",
   });
@@ -65,7 +66,7 @@ export default function CheckoutModal() {
     e.preventDefault();
 
     // Validation
-    const requiredFields = ["customerName", "customerPhone", "deliveryMethod"];
+    const requiredFields = ["customerName", "customerEmail", "customerPhone", "deliveryMethod"];
 
     const missingBasic = requiredFields.some(
       (field) => !formData[field as keyof typeof formData],
@@ -101,6 +102,7 @@ export default function CheckoutModal() {
       try {
         const order = await getApiClient("prod", config.orgId).createOrder({
           customerName: formData.customerName,
+          customerEmail: formData.customerEmail.trim(),
           customerPhone: formData.customerPhone,
           deliveryMethod: formData.deliveryMethod || null,
           address: {
@@ -157,6 +159,7 @@ export default function CheckoutModal() {
     // Reset form
     setFormData({
       customerName: "",
+    customerEmail: "",
       customerPhone: "",
       deliveryMethod: "",
     });
@@ -194,6 +197,11 @@ export default function CheckoutModal() {
                   placeholder="Tu nombre completo"
                   required
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="customerEmail">Correo electrónico</Label>
+                <Input id="customerEmail" type="email" autoComplete="email" required maxLength={254} value={formData.customerEmail} onChange={event => handleInputChange("customerEmail", event.target.value)} />
+                <p className="text-sm text-muted-foreground">Te avisaremos cuando cambie el estado de tu pedido.</p>
               </div>
               <div>
                 <Label htmlFor="customerPhone">Teléfono</Label>

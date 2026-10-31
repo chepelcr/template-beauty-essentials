@@ -161,6 +161,9 @@ export const baseEs: Dictionary = {
   'cart.taxNote': 'Los precios con IVA lo incluyen.',
 
   'checkout.title': 'Datos para el pedido',
+  'checkout.email': 'Correo electrónico',
+  'checkout.email.hint': 'Te avisaremos por correo cuando cambie el estado de tu pedido.',
+  'checkout.error.email_required': 'Ingresá un correo electrónico válido.',
   'checkout.name': 'Nombre completo',
   'checkout.phone': 'Teléfono',
   'checkout.phone.hint': '8 dígitos, por ejemplo 8888 7777',
@@ -380,6 +383,9 @@ export const baseEn: Dictionary = {
   'cart.taxNote': 'Prices marked VAT included already include it.',
 
   'checkout.title': 'Order details',
+  'checkout.email': 'Email address',
+  'checkout.email.hint': 'We will email you when your order status changes.',
+  'checkout.error.email_required': 'Enter a valid email address.',
   'checkout.name': 'Full name',
   'checkout.phone': 'Phone',
   'checkout.phone.hint': '8 digits, for example 8888 7777',

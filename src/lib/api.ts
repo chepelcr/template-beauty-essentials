@@ -5,6 +5,7 @@
  * and response normalization. This module only maps the template's existing
  * `getApiClient(mode, id)` surface onto the SDK so the hooks stay unchanged.
  */
+import { createGuestOrder } from '@/core/sdk';
 import {
   createStorefrontClient,
   type StorefrontConfig,
@@ -26,7 +27,7 @@ export function getApiClient(mode: string, id: string) {
   const client = createStorefrontClient({ config: toConfig(mode, id), host: HOST, region: REGION });
   return {
     getOrganization: () => client.getOrganization(),
-    createOrder: (input: StorefrontOrderInput) => client.createOrder(input),
+    createOrder: (input: StorefrontOrderInput & { customerEmail: string }) => mode === 'demo' ? Promise.reject(new Error('Demo storefronts do not take orders')) : createGuestOrder(id, input),
     getTheme: () => client.getTheme(),
     getContact: () => client.getContact(),
     getCategories: () => client.getCategories(),
