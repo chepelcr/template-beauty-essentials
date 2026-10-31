@@ -1,74 +1,85 @@
-import {CustomerStoreProvider, CustomerBar, BarterPage, AccountPage, AuthCallbackPage} from '@/customer';
-import { Route, Switch } from "wouter";
+import {StoreBarterPage, CustomerSsoCallback, CustomerAccountEntry} from '@/core';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@/lib/queryClient';
-import { Toaster } from '@/components/ui/toaster';
-import { SubdomainProvider } from '@/contexts/SubdomainContext';
-import { useTheme } from '@/hooks/useContent';
-import { useEffect } from 'react';
-import HomePage from "@/pages/HomePage";
-import ProductsPage from "@/pages/ProductsPage";
-import ProductDetailPage from "@/pages/ProductDetailPage";
-import DealsPage from "@/pages/DealsPage";
-import ServicesPage from "@/pages/ServicesPage";
-import ProgramsPage from "@/pages/ProgramsPage";
-import AboutPage from "@/pages/AboutPage";
-import NotFoundPage from "@/pages/NotFoundPage";
-import CartSidebar from "@/components/cart/cart-sidebar";
-import CheckoutModal from "@/components/cart/checkout-modal";
+import { useCallback } from 'react';
+import { Route, Switch } from 'wouter';
+import {
+  createStoreQueryClient,
+  LegacyOrNotFound,
+  LiveRegion,
+  MAIN_ID,
+  RouteFocus,
+  SkipLink,
+  StoreProvider,
+  StoreRouter,
+  useCartReconciliation,
+  useCatalog,
+  useStore,
+} from '@/core';
+import { I18nProvider, useI18n } from '@/i18n';
+import { CartSheet } from '@/components/CartSheet';
+import { Checkout } from '@/components/Checkout';
+import { Footer } from '@/components/Footer';
+import { Header } from '@/components/Header';
+import { StoreError, StoreUnconfigured } from '@/components/StoreStates';
+import { themeDefaults } from '@/theme/defaults';
+import About from '@/pages/About';
+import Catalog from '@/pages/Catalog';
+import Contact from '@/pages/Contact';
+import Home from '@/pages/Home';
+import NotFound from '@/pages/NotFound';
+import ProductPage from '@/pages/ProductPage';
 
-function AppContent() {
-  const { data: theme } = useTheme();
+const queryClient = createStoreQueryClient();
 
-  useEffect(() => {
-    if (theme?.faviconUrl) {
-      const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-      if (link) {
-        link.href = theme.faviconUrl;
-      }
-    }
-  }, [theme?.faviconUrl]);
+function Shell() {
+  const { status, retry } = useStore();
+  const { t } = useI18n();
+  const catalog = useCatalog();
+  const removedMessage = useCallback((names: string) => t('cart.removedUnavailable', { names }), [t]);
+  useCartReconciliation(catalog.items, !catalog.isLoading && !catalog.isError, removedMessage);
+
+  if (status === 'unconfigured') return <StoreUnconfigured />;
+  if (status === 'error') return <StoreError onRetry={retry} />;
 
   return (
-    <div className="min-h-screen bg-background">
-      <CustomerBar/>
-      <Switch>
-        <Route path="/auth/callback" component={AuthCallbackPage} />
-        <Route path="/trueque" component={BarterPage} />
-        <Route path="/barter" component={BarterPage} />
-        <Route path="/account" component={AccountPage} />
-        {/* Public routes */}
-        <Route path="/" component={HomePage} />
-        <Route path="/products" component={ProductsPage} />
-        <Route path="/products/:id" component={ProductDetailPage} />
-        <Route path="/deals" component={DealsPage} />
-        <Route path="/services" component={ServicesPage} />
-        <Route path="/programs" component={ProgramsPage} />
-        <Route path="/about" component={AboutPage} />
-
-        {/* Authentication routes */}
-        <Route path="/login" component={AccountPage} />
-        <Route path="/register" component={AccountPage} />
-        <Route path="/verify-email" component={AccountPage} />
-        <Route path="/forgot-password" component={AccountPage} />
-        <Route path="/reset-password" component={AccountPage} />
-
-        {/* 404 fallback */}
-        <Route component={NotFoundPage} />
-      </Switch>
-      <CartSidebar />
-      <CheckoutModal />
-      <Toaster />
-    </div>
+    <>
+      <SkipLink label={t('skip.content')} />
+      <Header />
+      <main id={MAIN_ID}>
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/auth/callback"><CustomerSsoCallback t={t} /></Route>
+          <Route path="/trueque"><StoreBarterPage t={t} /></Route>
+          <Route path="/barter"><StoreBarterPage t={t} /></Route>
+          <Route path="/account"><CustomerAccountEntry t={t} /></Route>
+          <Route path="/products" component={Catalog} />
+          <Route path="/products/:id" component={ProductPage} />
+          <Route path="/about" component={About} />
+          <Route path="/contact" component={Contact} />
+          <Route>
+            <LegacyOrNotFound notFound={NotFound} />
+          </Route>
+        </Switch>
+      </main>
+      <Footer />
+      <CartSheet />
+      <Checkout />
+      <RouteFocus />
+      <LiveRegion />
+    </>
   );
 }
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SubdomainProvider>
-        <CustomerStoreProvider><AppContent /></CustomerStoreProvider>
-      </SubdomainProvider>
+      <I18nProvider>
+        <StoreProvider theme={themeDefaults}>
+          <StoreRouter>
+            <Shell />
+          </StoreRouter>
+        </StoreProvider>
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
