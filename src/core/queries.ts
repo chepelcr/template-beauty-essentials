@@ -54,7 +54,10 @@ export function useCatalog(): CatalogState {
   return {
     items: query.data?.items ?? [],
     categories: query.data?.categories ?? [],
-    isLoading: query.isLoading,
+    // Pending, not isLoading: while the query waits for the store config it is
+    // disabled, and TanStack v5 reports that as not loading. Pages then showed
+    // their empty states and the cart dropped every line on each reload.
+    isLoading: query.isPending,
     isError: query.isError,
     refetch: () => void query.refetch(),
   };
@@ -90,7 +93,7 @@ export function useCmsPage(slug: ContractPage): CmsPageState {
   });
   return {
     page: query.data ?? null,
-    isLoading: query.isLoading,
+    isLoading: query.isPending,
     isError: query.isError,
     refetch: () => void query.refetch(),
   };
