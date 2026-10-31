@@ -6,11 +6,13 @@
  */
 import { useEffect } from 'react';
 import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { prepareCatalog, prepareCategories } from './catalog';
 import { deliveryMethodsFromShipping, LIVE_DELIVERY_METHODS, type DeliveryMethod } from './checkout';
 import { parseCmsPage, type CmsPage, type ContractPage } from './cms';
 import { fetchLiveCategories, fetchLiveProducts, fetchTemplateShipping } from './sdk';
-import { useStore } from './store-context';
+import { useStore, useStoreName } from './store-context';
+import { updatePageMetadata } from './metadata';
 import type { CatalogCategory, CatalogItem } from './types';
 
 const MINUTE = 60 * 1000;
@@ -107,21 +109,13 @@ export function useDeliveryMethods(): DeliveryMethod[] {
   return query.data ? deliveryMethodsFromShipping(query.data) : [...LIVE_DELIVERY_METHODS];
 }
 
-/** `<title>` and meta description for a page: "Página · Tienda". */
+/** Keep the page title and share preview consistent with the current store. */
 export function usePageMeta(title: string | null | undefined, description?: string | null): void {
   const { organization } = useStore();
-  const store = organization?.name;
+  const storeName = useStoreName();
+  const [location] = useLocation();
+  const storeDescription = organization?.description;
   useEffect(() => {
-    const parts = [title, store].filter((p): p is string => Boolean(p && p.trim()));
-    if (parts.length) document.title = Array.from(new Set(parts)).join(' · ');
-    if (description) {
-      let meta = document.querySelector<HTMLMetaElement>('meta[name="description"]');
-      if (!meta) {
-        meta = document.createElement('meta');
-        meta.name = 'description';
-        document.head.appendChild(meta);
-      }
-      meta.content = description;
-    }
-  }, [title, description, store]);
+    updatePageMetadata(document, { title, description, storeName, storeDescription });
+  }, [title, description, storeName, storeDescription, location]);
 }

@@ -20,6 +20,7 @@ import {
 import { storefrontClient } from './sdk';
 import { applyTheme, setFavicon, type ThemeDefaults } from './theme-bridge';
 import { useColorScheme } from './appearance';
+import { readStorefrontMetadataSeed, resolveStoreName } from './metadata';
 
 export type StoreStatus = 'loading' | 'ready' | 'unconfigured' | 'error';
 
@@ -122,3 +123,10 @@ export function useStore(): StoreValue {
 }
 
 export const useIsDemo = (): boolean => useStore().isDemo;
+
+/** Keep the publisher's real store identity visible while its API request loads. */
+export function useStoreName(): string {
+  const { organization } = useStore();
+  const seed = typeof document === 'undefined' ? '' : readStorefrontMetadataSeed(document).storeName;
+  return resolveStoreName(organization?.name, seed);
+}
