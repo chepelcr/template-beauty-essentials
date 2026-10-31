@@ -1,181 +1,296 @@
-@import "./core/core.css";
-/**
- * Beauty Essentials Template - Global Styles
- * Elegant cosmetics and skincare aesthetic
- */
+@import './core/core.css';
+@import './theme/tokens.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  /* CSS Variables - Beauty Essentials Theme */
-  :root {
-    --background: 0 0% 100%; /* White */
-    --foreground: 210 25% 7.84%; /* Dark gray */
-
-    --card: 180 6.67% 97.06%; /* Light gray */
-    --card-foreground: 210 25% 7.84%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 25% 7.84%;
-
-    --primary: 340 82% 52%; /* Pink primary */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 330 81% 84%; /* Soft pink */
-    --secondary-foreground: 340 82% 20%;
-
-    --accent: 334 100% 69%; /* Coral */
-    --accent-foreground: 0 0% 100%;
-
-    --muted: 240 1.96% 90%; /* Light gray */
-    --muted-foreground: 210 25% 7.84%;
-
-    --destructive: 356.3 90.56% 54.31%; /* Red */
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 201.43 30.43% 90.98%; /* Light border */
-    --input: 200 23.08% 97.45%; /* Input background */
-    --ring: 340 82% 52%; /* Pink ring */
-
-    /* Beauty-specific colors */
-    --beauty-pink: #e91e63; /* Primary brand pink */
-    --beauty-coral: #ff6090; /* Coral accent */
-    --beauty-cream: #fef9f3; /* Cream background */
-
-    /* Border radius */
-    --radius: 1.3rem;
-  }
-
-  * {
-    @apply border-border;
+  html {
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-text);
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+    text-wrap: balance;
   }
 
-  /* Selection color - beauty pink */
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  .on-deep :focus-visible {
+    outline-color: var(--focus-on-deep);
+  }
+
+  .nav-menu :focus-visible {
+    outline-color: var(--focus);
+  }
+
   ::selection {
-    background-color: hsl(340 82% 52% / 0.2);
-    color: hsl(340 82% 20%);
+    background: var(--be-petal);
+    color: var(--be-plum);
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
   }
 }
 
 @layer components {
-  /* Beauty gradient backgrounds */
-  .beauty-gradient {
-    background: linear-gradient(135deg, #e91e63 0%, #ff6090 100%);
+  .page {
+    width: 100%;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
   }
 
-  .beauty-gradient-soft {
-    background: linear-gradient(135deg, #fef9f3 0%, #fde4ef 100%);
+  .btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: var(--tap);
+    padding: 0.625rem 1.5rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: transform var(--dur-exit) var(--ease-out), background-color var(--dur-exit) ease, box-shadow var(--dur-exit) ease;
   }
 
-  /* Elegant buttons */
-  .btn-beauty {
-    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
-    @apply bg-primary text-primary-foreground;
-    @apply hover:opacity-90 hover:shadow-lg;
+  .btn:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
-  .btn-beauty-outline {
-    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
-    @apply border-2 border-primary text-primary bg-transparent;
-    @apply hover:bg-primary hover:text-white;
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
   }
 
-  .btn-beauty-soft {
-    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
-    @apply bg-secondary text-secondary-foreground;
-    @apply hover:opacity-90;
+  .btn-accent {
+    background: var(--accent);
+    color: var(--accent-ink);
   }
 
-  /* Beauty card styles */
-  .card-beauty {
-    @apply bg-white border border-border rounded-lg p-6;
-    @apply transition-all duration-300;
-    @apply hover:shadow-lg hover:border-primary;
+  .btn-accent:hover:not(:disabled) {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
   }
 
-  /* Product card */
-  .product-card-beauty {
-    @apply bg-white rounded-lg overflow-hidden;
-    @apply transition-all duration-300;
-    @apply hover:shadow-xl hover:-translate-y-1;
+  .btn-strong {
+    background: var(--heading);
+    color: var(--surface);
   }
 
-  /* Decorative elements */
-  .beauty-divider {
-    @apply h-px bg-gradient-to-r from-transparent via-primary to-transparent;
+  .btn-strong:hover:not(:disabled) {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--heading) 18%, transparent);
   }
 
-  /* Section with cream background */
-  .section-cream {
-    background-color: var(--beauty-cream);
+  .btn-quiet {
+    background: transparent;
+    color: var(--heading);
+    box-shadow: inset 0 0 0 1.5px var(--rule);
+  }
+
+  .btn-quiet:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 1.5px var(--heading);
+  }
+
+  .btn-on-deep {
+    background: transparent;
+    color: var(--ink-on-deep);
+    box-shadow: inset 0 0 0 1.5px var(--rule-on-deep);
+  }
+
+  .btn-on-deep:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 1.5px var(--ink-on-deep);
+  }
+
+  .icon-btn {
+    display: inline-grid;
+    place-items: center;
+    min-width: var(--tap);
+    min-height: var(--tap);
+    border-radius: var(--radius-pill);
+  }
+
+  .gloss {
+    display: none;
+  }
+
+  .frame {
+    border-radius: var(--radius-frame);
+    overflow: hidden;
+  }
+
+  .frame-sm {
+    border-radius: var(--radius-frame-sm);
+    overflow: hidden;
+  }
+
+  /* The arch: the mirror's silhouette, used for every product photo. */
+  .arch {
+    border-radius: var(--radius-arch);
+    overflow: hidden;
+  }
+
+  .field {
+    width: 100%;
+    min-height: var(--tap);
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--surface-raised);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1.5px var(--rule);
+    font: inherit;
+  }
+
+  .field[aria-invalid='true'] {
+    box-shadow: inset 0 0 0 1.5px var(--danger);
+  }
+
+  .skeleton {
+    background: linear-gradient(100deg, var(--surface-quiet) 30%, var(--surface-raised) 50%, var(--surface-quiet) 70%);
+    background-size: 300% 100%;
+    animation: skeleton-sweep 1.5s ease-in-out infinite;
+    border-radius: 0.75rem;
+  }
+
+  .skeleton-deep {
+    background: var(--surface-deep-raised);
+    border-radius: 0.75rem;
+  }
+
+  .price-tag {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--heading);
   }
 }
 
-@layer utilities {
-  /* Elegant typography */
-  .text-elegant {
-    @apply font-serif;
-  }
+/*
+ * The mirror: a chrome rim around an arched glass. A soft glint crosses the
+ * glass, led by the pointer (--glint-x); on touch or reduced motion it rests.
+ */
+.mirror {
+  position: relative;
+  padding: 0.5rem;
+  border-radius: var(--radius-arch);
+  background: var(--chrome-rim);
+  box-shadow: var(--shadow-lift);
+}
 
-  /* Shimmer effect for product images */
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
+.mirror-glass {
+  position: relative;
+  border-radius: var(--radius-arch);
+  overflow: hidden;
+  isolation: isolate;
+}
 
-  .shimmer {
-    animation: shimmer 2s infinite linear;
-    background: linear-gradient(to right, #f0f0f0 4%, #f8f8f8 25%, #f0f0f0 36%);
-    background-size: 1000px 100%;
-  }
+.mirror-glass::after {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 38%, var(--mirror-glint) 48%, transparent 58%);
+  transform: translateX(calc((var(--glint-x, 0.3) - 0.5) * 70%));
+  transition: transform 600ms var(--ease-out);
+}
 
-  /* Soft shadow */
-  .shadow-beauty {
-    box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15);
-  }
+/* The add button answers with a ripple from where it was pressed. */
+.ripple {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.35;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(1);
+  animation: ripple 600ms var(--ease-out) forwards;
+}
 
-  .shadow-beauty-lg {
-    box-shadow: 0 10px 40px rgba(233, 30, 99, 0.2);
+@keyframes ripple {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(40);
   }
 }
 
-/* Custom scrollbar for beauty theme */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+@keyframes skeleton-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+@keyframes sheet-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.3);
-  border-radius: 5px;
+@keyframes sheet-in-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.5);
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Focus styles */
-:focus-visible {
-  outline: 2px solid hsl(var(--primary));
-  outline-offset: 2px;
+.overlay[data-state='open'],
+.nav-menu[data-state='open'] {
+  animation: fade-in var(--dur-enter) ease;
+}
+
+.sheet[data-state='open'] {
+  animation: sheet-in-up var(--dur-enter) var(--ease-out);
+}
+
+@media (min-width: 768px) {
+  .sheet[data-state='open'] {
+    animation-name: sheet-in-right;
+  }
+}
+
+.dialog-pop[data-state='open'] {
+  animation: fade-in var(--dur-enter) var(--ease-out);
 }

@@ -1,0 +1,85 @@
+/*
+ * Beauty Essentials design tokens — three layers (see DESIGN.md).
+ * 1 primitives → 2 semantic roles → 3 component tokens.
+ * `--brand*` and `--font-display` are set at run time from the store's branding.
+ */
+:root {
+  /* 1 · Primitives — Espejo */
+  --be-milk: #FBF8F6;
+  --be-petal: #F2D4D8;
+  --be-petal-soft: #F8E7E9;
+  --be-cherry: #A3122B;
+  --be-chrome: #BFC3C9;
+  --be-chrome-deep: #8E949B;
+  --be-plum: #2B1A22;
+  --be-plum-soft: #6E5560;
+  --be-white: #FFFFFF;
+
+  /* 2 · Semantic */
+  --surface: var(--be-milk);
+  --surface-quiet: var(--be-petal-soft);
+  --surface-raised: var(--be-white);
+  --surface-deep: var(--be-plum);
+  --surface-deep-raised: #3A2630;
+  --ink: var(--be-plum);
+  --ink-soft: var(--be-plum-soft);
+  --ink-on-deep: var(--be-milk);
+  --ink-on-deep-soft: var(--be-petal);
+  --heading: var(--be-plum);
+  --rule: color-mix(in srgb, var(--be-plum) 14%, transparent);
+  --rule-on-deep: color-mix(in srgb, var(--be-milk) 22%, transparent);
+  --accent: var(--brand, var(--be-cherry));
+  --accent-ink: var(--brand-ink, var(--be-white));
+  --accent-text: var(--brand-text, var(--be-cherry));
+  --accent-2: var(--brand-2, var(--be-petal));
+  --accent-2-ink: var(--brand-2-ink, var(--be-plum));
+  --offer: var(--be-cherry);
+  --offer-ink: var(--be-white);
+  --danger: var(--be-cherry);
+  --success: #2F6B4A;
+  --focus: var(--be-plum);
+  --focus-on-deep: var(--be-petal);
+  --scrim: rgb(43 26 34 / 0.55);
+
+  /* 3 · Component */
+  --font-display: "Syne", "Noto Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-text: "Hanken Grotesk", "Noto Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius-frame: 1.25rem;
+  --radius-frame-sm: 0.875rem;
+  --radius-arch: 999px 999px 1.25rem 1.25rem;
+  --radius-pill: 999px;
+  --chrome-rim: linear-gradient(140deg, #F3F4F6 0%, #BFC3C9 38%, #8E949B 62%, #E7E9EC 100%);
+  --mirror-glint: rgb(255 255 255 / 0.55);
+  --shadow-soft: 0 1px 2px rgb(43 26 34 / 0.06), 0 16px 32px -20px rgb(43 26 34 / 0.35);
+  --shadow-lift: 0 2px 4px rgb(43 26 34 / 0.08), 0 28px 48px -24px rgb(43 26 34 / 0.45);
+  --tap: 2.75rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --max: 76rem;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+  --dur-enter: 280ms;
+  --dur-exit: 180ms;
+}
+
+/* The mirror at night: plum glass, petal light, a brighter cherry for text. */
+:root[data-color-scheme='dark'] {
+  --surface: #1B1216;
+  --surface-quiet: #251A1F;
+  --surface-raised: #2F2228;
+  --surface-deep: #120B0E;
+  --surface-deep-raised: #2A1B22;
+  --ink: #F6ECEE;
+  --ink-soft: #CDB7BE;
+  --ink-on-deep: #F6ECEE;
+  --ink-on-deep-soft: #E9B9C0;
+  --heading: #F6ECEE;
+  --rule: rgb(246 236 238 / 0.2);
+  --offer: #F27C8E;
+  --offer-ink: #120B0E;
+  --danger: #F27C8E;
+  --success: #8FD1A8;
+  --focus: #F27C8E;
+  --mirror-glint: rgb(255 255 255 / 0.22);
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 16px 32px -20px rgb(0 0 0 / 0.7);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.45), 0 28px 48px -24px rgb(0 0 0 / 0.8);
+}

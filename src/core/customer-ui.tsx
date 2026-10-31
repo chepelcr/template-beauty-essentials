@@ -105,18 +105,18 @@ export function CustomerSsoCallback({ t }: { t: Translate }) {
     </section>
   );
 }
-export function StoreAccountBar({ t }: { t: Translate }) {
-  const account = useCustomerAccount();
-  return (
-    <nav className="tsuru-account-bar" aria-label={t("customer.nav")}>
-      <Link href="/trueque">{t("barter.title")}</Link>
-      {account.signedIn ? (
-        <Link href="/account">{t("customer.account")}</Link>
-      ) : (
-        <CustomerSignInButton t={t} />
-      )}
-    </nav>
-  );
+/**
+ * The account links each template places in its own menus (not a bar of
+ * their own): the store's barter page, and sign-in or the customer's
+ * account. `key` is the dictionary key, for templates that gloss labels.
+ */
+export function useAccountLinks(t: Translate) {
+  const { signedIn } = useCustomerAccount();
+  const accountKey = signedIn ? "customer.account" : "customer.login";
+  return {
+    barter: { href: "/trueque", key: "barter.title", label: t("barter.title") },
+    account: { href: "/account", key: accountKey, label: t(accountKey) },
+  };
 }
 export function CustomerAccountEntry({ t }: { t: Translate }) {
   const { config, isDemo } = useStore(),
