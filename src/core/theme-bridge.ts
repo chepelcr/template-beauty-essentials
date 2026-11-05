@@ -82,14 +82,39 @@ export function applyTheme(theme: StorefrontTheme | null, defaults: ThemeDefault
   }
 }
 
+const faviconDefaults = new WeakMap<Document, { href: string; type: string | null; request: number }>();
+
 export function setFavicon(url: string | null | undefined): void {
-  if (!url || typeof document === 'undefined') return;
+  if (typeof document === 'undefined') return;
   let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
   if (!link) {
     link = document.createElement('link');
     link.rel = 'icon';
     document.head.appendChild(link);
   }
-  link.removeAttribute('type');
-  link.href = url;
+  let defaults = faviconDefaults.get(document);
+  if (!defaults) {
+    defaults = { href: link.getAttribute('href') || '/favicon.svg', type: link.getAttribute('type'), request: 0 };
+    faviconDefaults.set(document, defaults);
+  }
+  const request = ++defaults.request;
+  const target = link;
+  const restore = () => {
+    target.href = defaults.href;
+    if (defaults.type) target.type = defaults.type;
+    else target.removeAttribute('type');
+  };
+  const candidate = url?.trim();
+  if (!candidate) { restore(); return; }
+
+  // Keep the bundled icon while the organization's image loads. A stale or
+  // unavailable logo must never replace a working favicon with a broken URL.
+  const image = new Image();
+  image.onload = () => {
+    if (defaults.request !== request) return;
+    target.removeAttribute('type');
+    target.href = candidate;
+  };
+  image.onerror = () => { if (defaults.request === request) restore(); };
+  image.src = candidate;
 }

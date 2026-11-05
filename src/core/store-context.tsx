@@ -87,7 +87,7 @@ export function StoreProvider({
   }, [theme, defaults, scheme]);
 
   useEffect(() => {
-    setFavicon(theme?.faviconUrl ?? theme?.logoUrl ?? organization?.logoUrl);
+    setFavicon(theme?.faviconUrl?.trim() || theme?.logoUrl?.trim() || organization?.logoUrl?.trim());
   }, [theme, organization]);
 
   let status: StoreStatus = 'loading';
