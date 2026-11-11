@@ -106,10 +106,10 @@ export default function Catalog() {
     <>
       <div className="page pt-10">
         <header className="flex flex-wrap items-end justify-between gap-4">
-          <div className="max-w-3xl">
+          <div className="min-w-0 max-w-3xl">
             {cms.isLoading ? (
               <div aria-hidden="true" className="flex flex-col gap-3">
-                <div className="skeleton h-14 w-72" />
+                <div className="skeleton h-14 w-72 max-w-full" />
                 <div className="skeleton h-5 w-96 max-w-full" />
               </div>
             ) : (
@@ -130,7 +130,7 @@ export default function Catalog() {
             <label htmlFor="catalog-search" className="sr-only">
               {t('catalog.search')}
             </label>
-            <div className="relative flex-1">
+            <div className="relative min-w-0 flex-1">
               <Search aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft" />
               <input id="catalog-search" type="search" className="field rounded-full pl-11" placeholder={t('catalog.search.placeholder')} value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>

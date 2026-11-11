@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { useI18n } from '@/i18n';
 
 interface SheetProps {
@@ -12,17 +12,30 @@ interface SheetProps {
   footer?: ReactNode;
   /** Both fill phones. On wide screens, 'side' opens on the right and 'center' opens a dialog. */
   placement?: 'side' | 'center';
+  /** Stable opener for flows that replace one sheet with another. */
+  returnFocusId?: string;
 }
 
 /** Accessible modal surface (focus trap, Escape, scroll lock) from Radix. */
-export function Sheet({ open, onOpenChange, title, description, children, footer, placement = 'side' }: SheetProps) {
+export function Sheet({ open, onOpenChange, title, description, children, footer, placement = 'side', returnFocusId }: SheetProps) {
   const { t } = useI18n();
   const side = placement === 'side';
+  const opener = useRef<HTMLElement | null>(null);
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="overlay fixed inset-0 z-40 bg-[color:var(--scrim)] backdrop-blur-[2px]" />
         <Dialog.Content
+          onOpenAutoFocus={() => {
+            opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          }}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            // A cart/checkout hand-off leaves the newly opened dialog in charge of focus.
+            if (document.querySelector('[role="dialog"][data-state="open"]')) return;
+            const target = returnFocusId ? document.getElementById(returnFocusId) : opener.current;
+            if (target?.isConnected) target.focus({ preventScroll: true });
+          }}
           className={
             side
               ? 'sheet fixed inset-0 z-50 flex h-dvh max-h-dvh flex-col bg-surface shadow-lift md:inset-y-0 md:left-auto md:right-0 md:max-h-none md:w-[28rem] md:rounded-l-[1.75rem] md:rounded-tr-none'

@@ -49,7 +49,7 @@ export function kindOf(type: string | null | undefined): ItemKind {
 
 /** Active rows only: status 1 (live) or an active flag (demo). */
 export function isListed(product: StorefrontProduct): boolean {
-  return product.status === 1 || (product.status === undefined && product.isActive);
+  return (product.status ?? 1) === 1;
 }
 
 export interface PriceView {
@@ -139,8 +139,7 @@ export function toCatalogCategory(category: StorefrontCategory, index = 0): Cata
 
 export function isCategoryActive(category: StorefrontCategory): boolean {
   const raw = category as Record<string, unknown>;
-  const active = raw.is_active ?? raw.isActive ?? category.isActive;
-  return active !== false;
+  return Number(raw.status ?? 1) === 1;
 }
 
 /** Active categories in the store's order. */

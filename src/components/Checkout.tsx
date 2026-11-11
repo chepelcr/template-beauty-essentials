@@ -113,7 +113,7 @@ export function Checkout() {
     phase === 'success' ? <Label k="checkout.success.title" gloss /> : phase === 'demo' ? t('checkout.demo.title') : t('checkout.title');
 
   return (
-    <Sheet open={open} onOpenChange={(o) => (o ? undefined : closeCheckout())} title={title} placement="center">
+    <Sheet returnFocusId="store-cart-trigger" open={open} onOpenChange={(o) => (o ? undefined : closeCheckout())} title={title} placement="center">
       {phase === 'demo' && (
         <div className="flex flex-col gap-4">
           <p className="text-ink-soft">{t('checkout.demo.body')}</p>

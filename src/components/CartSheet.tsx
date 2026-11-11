@@ -20,6 +20,7 @@ export function CartSheet() {
 
   return (
     <Sheet
+      returnFocusId="store-cart-trigger"
       open={isOpen}
       onOpenChange={(open) => (open ? undefined : close())}
       title={<Label k="cart.title" gloss />}

@@ -84,12 +84,12 @@ export function ContactDetails({ tone = 'light', compact = false }: { tone?: 'li
     <div className="flex flex-col gap-5">
       <dl className={`grid gap-4 ${compact ? '' : 'sm:grid-cols-2'}`}>
         {rows.map(({ Icon, label, body }) => (
-          <div key={label} className="flex gap-3">
-            <Icon aria-hidden="true" className={`mt-1 h-5 w-5 shrink-0 ${strong}`} />
-            <div>
-              <dt className={`text-sm font-semibold ${strong}`}>{label}</dt>
-              <dd className={soft}>{body}</dd>
-            </div>
+          <div key={label} className="min-w-0">
+            <dt className={`flex items-center gap-3 text-sm font-semibold ${strong}`}>
+              <Icon aria-hidden="true" className="h-5 w-5 shrink-0" />
+              <span>{label}</span>
+            </dt>
+            <dd className={`ml-8 ${soft}`}>{body}</dd>
           </div>
         ))}
       </dl>

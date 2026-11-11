@@ -57,7 +57,7 @@ export default function Home() {
         </div>
         {home.hero.image && (
           <div className="md:col-span-6 lg:col-span-5">
-            <Mirror className="mx-auto w-[min(25rem,82vw)]">
+            <Mirror className="mx-auto w-[min(25rem,82vw)] max-w-full">
               <div className="aspect-[3/4] bg-surface-quiet">
                 <StoreImage src={home.hero.image} alt="" priority sizes="(min-width: 768px) 25rem, 82vw" maxWidth={1000} fallback={<Placeholder />} />
               </div>
@@ -139,10 +139,12 @@ export default function Home() {
           <ul className="grid gap-px overflow-hidden rounded-frame bg-[color:var(--rule)] md:grid-cols-3">
             {home.benefits.map((benefit) => (
               <li key={benefit.title} className="flex flex-col gap-3 bg-surface p-7">
-                <span className="grid h-11 w-11 place-items-center rounded-full bg-surface-quiet text-accent-text">
-                  <CmsIcon icon={benefit.icon} className="h-5 w-5" strokeWidth={1.8} />
-                </span>
-                <h3 className="text-xl text-heading">{benefit.title}</h3>
+                <div className="flex items-center gap-3">
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-surface-quiet text-accent-text shrink-0">
+                    <CmsIcon icon={benefit.icon} className="h-5 w-5" strokeWidth={1.8} />
+                  </span>
+                  <h3 className="text-xl text-heading min-w-0">{benefit.title}</h3>
+                </div>
                 {benefit.description && <p className="text-ink-soft">{benefit.description}</p>}
               </li>
             ))}

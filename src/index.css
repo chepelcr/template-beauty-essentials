@@ -15,6 +15,7 @@
 
   body {
     margin: 0;
+    overflow-wrap: anywhere;
     font-size: 1.0625rem;
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;

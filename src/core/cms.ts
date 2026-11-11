@@ -32,12 +32,13 @@ const order = (o: Record<string, unknown>): number => Number(pick(o, 'sort_order
 export function parseCmsPage(input: unknown): CmsPage | null {
   if (!input || typeof input !== 'object') return null;
   const raw = input as Record<string, unknown>;
-  if (pick(raw, 'is_active', 'isActive') === false) return null;
+  // status: 1 active · 2 inactive · 3 deleted. The public API already serves only 1.
+  if (Number(pick(raw, 'status') ?? 1) !== 1) return null;
 
   const sections: ContentMap = new Map();
   const rawSections = Array.isArray(raw.sections) ? (raw.sections as Record<string, unknown>[]) : [];
   for (const section of [...rawSections].sort((a, b) => order(a) - order(b))) {
-    if (pick(section, 'is_active', 'isActive') === false) continue;
+    if (Number(pick(section, 'status') ?? 1) !== 1) continue;
     const type = String(pick(section, 'section_type', 'sectionType') ?? '');
     if (!type || sections.has(type)) continue;
     const values = new Map<string, { value: string; type: string }>();
